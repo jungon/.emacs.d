@@ -11,6 +11,7 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
@@ -54,7 +55,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Hack 12" nil t)
+(set-frame-font "Source Code Pro 11" nil t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -68,7 +69,7 @@
 (set-keyboard-coding-system 'utf-8)
 (setq-default tab-width 2
               indent-tabs-mode nil)
-;;(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (use-package diminish
@@ -184,8 +185,68 @@
          (lambda () (require 'ccls) (lsp))))
 
 
+;;; Modes
+
+(use-package rainbow-delimiters
+  :ensure t)
+
+(use-package aggressive-indent
+  :ensure t)
+
+
+;;; Clojure
+
+(use-package clojure-mode
+  :ensure t
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode))
+  :init
+  (add-hook 'clojure-mode-hook #'prettify-symbols-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
+  :config
+  (progn
+    (require 'clojure-mode-extra-font-locking)
+    (setq clojure-align-forms-automatically t)
+    (setq clojure--prettify-symbols-alist
+          '(("fn" . ?λ)))))
+
+(use-package cider
+  :ensure t
+  :defer t
+  :pin melpa-stable
+  :init
+  (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :config
+  (progn
+    (setq nrepl-hide-special-buffers t)
+    (setq cider-popup-stacktraces-in-repl t)
+    (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
+    (setq cider-repl-pop-to-buffer-on-connect nil)
+    (setq cider-repl-use-clojure-font-lock t
+          cider-font-lock-dynamically '(macro core function var))
+    (setq cider-auto-select-error-buffer nil)
+    (setq cider-prompt-save-file-on-load nil)
+    (setq cider-repl-display-help-banner nil)
+    (setq cider-repl-use-pretty-printing t)
+    (setq cider-refresh-before-fn "reloaded.repl/suspend")
+    (setq cider-refresh-after-fn "reloaded.repl/resume")
+    (setq cider-cljs-lein-repl "(do (reloaded.repl/go) (user/cljs-repl))")
+    (setq cider-prompt-for-symbol nil)))
+
+(use-package clj-refactor
+  :ensure t
+  :defer t
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
+
 (require 'server)
 (if (not (server-running-p)) (server-start))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
