@@ -82,6 +82,7 @@
   (progn
     (require 'smartparens-config)
     (smartparens-global-mode 1)
+    (sp-use-paredit-bindings)
     (show-paren-mode t)))
 
 (use-package expand-region
