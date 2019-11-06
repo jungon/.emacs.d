@@ -1,4 +1,4 @@
-;;; package --- Summary - My minimal Emacs init file
+;;; package --- Summary - My Emacs init file
 
 ;;; Commentary:
 ;;; Simple Emacs setup I carry everywhere
@@ -11,7 +11,6 @@
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
@@ -78,10 +77,11 @@
 (use-package smartparens
   :ensure t
   :diminish smartparens-mode
+  :init
+  (add-hook 'prog-mode-hook #'smartparens-mode)
   :config
   (progn
     (require 'smartparens-config)
-    (smartparens-global-mode 1)
     (sp-use-paredit-bindings)
     (show-paren-mode t)))
 
@@ -165,9 +165,8 @@
   (helm-projectile-on))
 
 (use-package yasnippet
-  :ensure t
-  :config
-  (yas-global-mode 1))
+  :ensure t)
+
 
 (use-package lsp-mode :commands lsp :ensure t)
 (use-package lsp-ui :commands lsp-ui-mode :ensure t)
@@ -186,13 +185,30 @@
          (lambda () (require 'ccls) (lsp))))
 
 
+;;; Ediff
+
+(use-package ediff
+  :init
+  (setq ediff-window-setup-function #'ediff-setup-windows-plain)
+  (setq ediff-split-window-function #'split-window-horizontally)
+  (setq ediff-diff-options "-w")
+  (winner-mode)
+  (add-hook 'ediff-after-quit-hook-internal #'winner-undo))
+
+
 ;;; Modes
 
+(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+
 (use-package rainbow-delimiters
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package aggressive-indent
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'prog-mode-hook #'aggressive-indent-mode))
 
 
 ;;; Clojure
@@ -202,12 +218,8 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :init
-  (add-hook 'clojure-mode-hook #'prettify-symbols-mode)
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'smartparens-strict-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
-  (add-hook 'clojure-mode-hook #'eldoc-mode)
   :config
   (progn
     (require 'clojure-mode-extra-font-locking)
@@ -218,24 +230,23 @@
 (use-package cider
   :ensure t
   :defer t
-  :pin melpa-stable
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  (add-hook 'cider-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'subword-mode)
+  (add-hook 'cider-repl-mode-hook #'smartparens-mode)
+  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   :config
   (progn
     (setq nrepl-hide-special-buffers t)
-    (setq cider-popup-stacktraces-in-repl t)
     (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
-    (setq cider-repl-pop-to-buffer-on-connect nil)
+    (setq cider-repl-pop-to-buffer-on-connect t)
     (setq cider-repl-use-clojure-font-lock t
           cider-font-lock-dynamically '(macro core function var))
-    (setq cider-auto-select-error-buffer nil)
-    (setq cider-prompt-save-file-on-load nil)
+    (setq cider-show-error-buffer t)
+    (setq cider-auto-select-error-buffer t)
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-use-pretty-printing t)
-    (setq cider-refresh-before-fn "reloaded.repl/suspend")
-    (setq cider-refresh-after-fn "reloaded.repl/resume")
-    (setq cider-cljs-lein-repl "(do (reloaded.repl/go) (user/cljs-repl))")
     (setq cider-prompt-for-symbol nil)))
 
 (use-package clj-refactor
@@ -243,6 +254,10 @@
   :defer t
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
+(use-package cider-eval-sexp-fu
+  :ensure t
+  :config (require 'cider-eval-sexp-fu))
 
 
 (require 'server)
