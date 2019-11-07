@@ -185,6 +185,17 @@
          (lambda () (require 'ccls) (lsp))))
 
 
+;;; Shell integration
+
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns x))
+  :ensure t
+  :config
+  (setq exec-path-from-shell-arguments nil)
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-envs '("PATH")))
+
+
 ;;; Ediff
 
 (use-package ediff
@@ -222,10 +233,12 @@
   (add-hook 'clojure-mode-hook #'subword-mode)
   :config
   (progn
-    (require 'clojure-mode-extra-font-locking)
     (setq clojure-align-forms-automatically t)
     (setq clojure--prettify-symbols-alist
           '(("fn" . ?λ)))))
+
+(use-package clojure-mode-extra-font-locking
+  :ensure t)
 
 (use-package cider
   :ensure t
@@ -256,8 +269,7 @@
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package cider-eval-sexp-fu
-  :ensure t
-  :config (require 'cider-eval-sexp-fu))
+  :ensure t)
 
 
 (require 'server)
