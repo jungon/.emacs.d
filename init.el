@@ -117,10 +117,9 @@
 (use-package projectile
   :ensure t
   :diminish projectile-mode
-  :bind
-  (("C-c p f" . helm-projectile-find-file)
-   ("C-c p p" . helm-projectile-switch-project)
-   ("C-c p s" . projectile-save-project-buffers))
+  :bind-keymap
+  ("s-p" . projectile-command-map)
+  ("C-c p" . projectile-command-map)
   :config
   (projectile-mode +1)
   )
