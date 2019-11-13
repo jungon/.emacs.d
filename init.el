@@ -250,16 +250,13 @@
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   :config
   (progn
-    (setq nrepl-hide-special-buffers t)
     (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
-    (setq cider-repl-pop-to-buffer-on-connect t)
-    (setq cider-repl-use-clojure-font-lock t
-          cider-font-lock-dynamically '(macro core function var))
+    (setq cider-repl-pop-to-buffer-on-connect 'display-only)
     (setq cider-show-error-buffer t)
     (setq cider-auto-select-error-buffer t)
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-use-pretty-printing t)
-    (setq cider-prompt-for-symbol nil)))
+    (setq cider-repl-require-ns-on-set t)))
 
 (use-package clj-refactor
   :ensure t
