@@ -54,7 +54,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Source Code Pro 11" nil t)
+(set-frame-font "Fira Code 11" nil t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -227,22 +227,18 @@
   :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  :init
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode)
   :config
   (progn
     (setq clojure-align-forms-automatically t)
     (setq clojure--prettify-symbols-alist
           '(("fn" . ?λ)))))
 
-(use-package clojure-mode-extra-font-locking
-  :ensure t)
-
 (use-package cider
   :ensure t
   :defer t
   :init
+  (add-hook 'cider-mode-hook #'yas-minor-mode)
+  (add-hook 'cider-mode-hook #'subword-mode)
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
@@ -250,12 +246,19 @@
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   :config
   (progn
-    (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
-    (setq cider-repl-pop-to-buffer-on-connect 'display-only)
+    (setq nrepl-hide-special-buffers t)
+    (setq cider-save-file-on-load t)
+    (setq cider-eval-result-prefix ";; => ")
+    (setq cider-special-mode-truncate-lines nil)
+    (setq cider-font-lock-dynamically '(macro core function var))
+    (setq cider-font-lock-reader-conditionals nil)
+    (setq cider-overlays-use-font-lock t)
     (setq cider-show-error-buffer t)
     (setq cider-auto-select-error-buffer t)
+    (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
+    (setq cider-repl-pop-to-buffer-on-connect nil)
+    (setq cider-repl-display-in-current-window t)
     (setq cider-repl-display-help-banner nil)
-    (setq cider-repl-use-pretty-printing t)
     (setq cider-repl-require-ns-on-set t)))
 
 (use-package clj-refactor
