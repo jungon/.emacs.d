@@ -144,7 +144,7 @@
   ("M-x" . helm-M-x)
   ("C-x C-f" . helm-find-files)
   ("M-y" . helm-show-kill-ring)
-  ("C-x b" . helm-mini)
+  ("C-x C-b" . helm-mini)
   :config
   (require 'helm-config)
   (helm-mode 1)
