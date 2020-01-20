@@ -257,7 +257,7 @@
     (setq cider-auto-select-error-buffer t)
     (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
     (setq cider-repl-pop-to-buffer-on-connect nil)
-    (setq cider-repl-display-in-current-window t)
+    (setq cider-repl-display-in-current-window nil)
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-require-ns-on-set t)))
 

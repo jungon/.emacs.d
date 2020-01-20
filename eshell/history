@@ -35,3 +35,7 @@ ls
 cd clojure_tutorial/
 ls
 ls
+cd ..
+ls
+lein new app the-divine-cheese-code
+ls
