@@ -167,7 +167,7 @@
   :ensure t)
 
 
-(use-package lsp-mode :commands lsp :ensure t)
+(use-package lsp-mode :hook rust-mode :commands lsp :ensure t)
 (use-package lsp-ui :commands lsp-ui-mode :ensure t)
 (use-package company-lsp
   :ensure t
@@ -276,26 +276,40 @@
 (use-package web-mode
   :ensure t
   :mode ("\\.[jt]sx?\\'" . web-mode)
-  :hook (web-mode . (lambda ()
-                      (setq web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'")))
-                      (setq web-mode-markup-indent-offset 2)
-                      (setq web-mode-css-indent-offset 2)
-                      (setq web-mode-code-indent-offset 2)
-                      (setq web-mode-script-padding 2)
-                      (setq web-mode-block-padding 2)
-                      (setq web-mode-style-padding 2)
-                      (setq web-mode-enable-auto-pairing t)
-                      (setq web-mode-enable-auto-closing t)
-                      (setq web-mode-enable-current-element-highlight t)
-                      prettier-js-mode))
   :config
+  (defun my-web-mode-hook ()
+    (setq web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'")))
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-script-padding 2)
+    (setq web-mode-block-padding 2)
+    (setq web-mode-style-padding 2)
+    (setq web-mode-enable-auto-pairing t)
+    (setq web-mode-enable-auto-closing t)
+    (setq web-mode-enable-current-element-highlight t))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers
                         '(javascript-jshint json-jsonlist))))
 
 (use-package emmet-mode
   :ensure t
-  :hook (web-mode . emmet-mode))
+  :diminish emmet-mode
+  :hook web-mode)
+
+
+;;; Rust
+(use-package rust-mode
+  :ensure t
+  :config
+  (add-hook 'rust-mode (lambda () (setq indent-tabs-mode nil)))
+  (setq rust-format-on-save t))
+
+(use-package cargo
+  :ensure t
+  :hook (rust-mode . cargo-minor-mode))
+
 
 
 
