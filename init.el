@@ -33,10 +33,10 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(use-package material-theme
+(use-package dracula-theme
   :ensure t
   :config
-  (load-theme 'material t))
+  (load-theme 'dracula t))
 
 (use-package smart-mode-line-powerline-theme
   :ensure t)
@@ -54,7 +54,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Fira Code 11" nil t)
+(set-frame-font "Source Code Pro 10" nil t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -271,6 +271,34 @@
   :ensure t)
 
 
+;;; Web mode
+
+(use-package web-mode
+  :ensure t
+  :mode ("\\.[jt]sx?\\'" . web-mode)
+  :hook (web-mode . (lambda ()
+                      (setq web-mode-content-types-alist '(("jsx" . "\\.[jt]sx?\\'")))
+                      (setq web-mode-markup-indent-offset 2)
+                      (setq web-mode-css-indent-offset 2)
+                      (setq web-mode-code-indent-offset 2)
+                      (setq web-mode-script-padding 2)
+                      (setq web-mode-block-padding 2)
+                      (setq web-mode-style-padding 2)
+                      (setq web-mode-enable-auto-pairing t)
+                      (setq web-mode-enable-auto-closing t)
+                      (setq web-mode-enable-current-element-highlight t)
+                      prettier-js-mode))
+  :config
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint json-jsonlist))))
+
+(use-package emmet-mode
+  :ensure t
+  :hook (web-mode . emmet-mode))
+
+
+
 (require 'server)
 (if (not (server-running-p)) (server-start))
 
@@ -290,4 +318,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 89)) (:foreground "#ffffff" :background "#263238")))))
+ '(default ((((min-colors 16777216)) (:background "#282a36" :foreground "#f8f8f2")) (t (:background "#000000" :foreground "#f8f8f2")))))
