@@ -33,10 +33,10 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(use-package dracula-theme
+(use-package material-theme
   :ensure t
   :config
-  (load-theme 'dracula t))
+  (load-theme 'material t))
 
 (use-package smart-mode-line
   :ensure t
