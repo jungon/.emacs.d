@@ -38,19 +38,18 @@
   :config
   (load-theme 'dracula t))
 
-(use-package smart-mode-line-powerline-theme
-  :ensure t)
-
 (use-package smart-mode-line
   :ensure t
   :config
-  (setq sml/theme 'powerline)
+  (setq sml/no-confirm-load-theme t)
+  (setq sml/theme 'dark)
   (add-hook 'after-init-hook 'sml/setup))
 
+(setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 64)))
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
-       (abbreviate-file-name (buffer-file-name))
-       "%b"))))
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
@@ -323,7 +322,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default)))
+    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default)))
  '(package-selected-packages
    (quote
     (ccls company-lsp lsp-ui lsp-mode yasnippet helm-projectile helm flycheck company projectile magit crux avy which-key expand-region smartparens diminish smart-mode-line-powerline-theme material-theme use-package))))
