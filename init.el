@@ -45,7 +45,7 @@
   (setq sml/theme 'dark)
   (add-hook 'after-init-hook 'sml/setup))
 
-(setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 64)))
+(setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 72)))
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
@@ -53,7 +53,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Source Code Pro 10" nil t)
+(set-frame-font "Fira Code 10" nil t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -260,11 +260,17 @@
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-require-ns-on-set t)))
 
+(defun my-clojure-mode ()
+  "Clojure mode hook."
+  (clj-refactor-mode 1)
+  (yas-minor-mode 1)
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
+
 (use-package clj-refactor
   :ensure t
   :defer t
   :diminish clj-refactor-mode
-  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+  :hook (clojure-mode . my-clojure-mode))
 
 (use-package cider-eval-sexp-fu
   :ensure t)
