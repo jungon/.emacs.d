@@ -104,10 +104,10 @@
 (use-package crux
   :ensure t
   :bind
-  ("C-k" . crux-smart-kill-line)
+  ("C-S-k" . crux-smart-kill-line)
   ("C-c n" . crux-cleanup-buffer-or-region)
   ("C-c f" . crux-recentf-find-file)
-  ("C-a" . crux-move-beginning-of-line))
+  ("C-S-a" . crux-move-beginning-of-line))
 
 (use-package magit
   :ensure t
@@ -177,7 +177,6 @@
   :ensure t
   :config
   (setq ccls-executable "ccls")
-  (setq lsp-prefer-flymake nil)
   (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
   :hook ((c-mode c++-mode objc-mode) .
          (lambda () (require 'ccls) (lsp))))
@@ -231,12 +230,22 @@
    ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
 
 
+;;; rjsx
+(use-package rjsx-mode
+  :ensure t
+  :mode "\\.js\\'"
+  :config
+  (defun my/rsjx-mode-hook ()
+    (setq indent-tabs-mode nil)
+    (setq js-indent-level 2))
+  (add-hook 'rjsx-mode-hook #'my/rsjx-mode-hook))
+
+
 ;;; Clojure
 
 (use-package clojure-mode
   :ensure t
-  :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode))
+  :mode "\\.clj\\'"
   :config
   (progn
     (setq clojure-align-forms-automatically t)
@@ -271,17 +280,16 @@
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-require-ns-on-set t)))
 
-(defun my-clojure-mode ()
-  "Clojure mode hook."
-  (clj-refactor-mode 1)
-  (yas-minor-mode 1)
-  (cljr-add-keybindings-with-prefix "C-c C-m"))
-
 (use-package clj-refactor
   :ensure t
   :defer t
   :diminish clj-refactor-mode
-  :hook (clojure-mode . my-clojure-mode))
+  :init
+  (defun my/clojure-mode-hook ()
+    (clj-refactor-mode 1)
+    (yas-minor-mode 1)
+    (cljr-add-keybindings-with-prefix "C-c C-m"))
+  (add-hook 'clojure-mode-hook #'my/clojure-mode-hook))
 
 (use-package cider-eval-sexp-fu
   :ensure t)
