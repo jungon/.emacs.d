@@ -43,7 +43,7 @@
   :config
   (setq sml/no-confirm-load-theme t)
   (setq sml/theme 'dark)
-  (add-hook 'after-init-hook 'sml/setup))
+  (add-hook 'after-init-hook #'sml/setup))
 
 (setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 72)))
 (setq frame-title-format
@@ -67,7 +67,7 @@
 (set-keyboard-coding-system 'utf-8)
 (setq-default tab-width 2
               indent-tabs-mode nil)
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (use-package diminish
@@ -106,7 +106,6 @@
   :bind
   ("C-S-k" . crux-smart-kill-line)
   ("C-c n" . crux-cleanup-buffer-or-region)
-  ("C-c f" . crux-recentf-find-file)
   ("C-S-a" . crux-move-beginning-of-line))
 
 (use-package magit
@@ -120,14 +119,14 @@
   ("s-p" . projectile-command-map)
   ("C-c p" . projectile-command-map)
   :config
-  (projectile-mode +1)
-  )
+  (projectile-mode +1))
 
 (use-package company
   :ensure t
   :diminish company-mode
   :config
-  (add-hook 'after-init-hook #'global-company-mode))
+  (add-hook 'after-init-hook #'global-company-mode)
+  (setq company-tooltip-align-annotations t))
 
 (use-package flycheck
   :ensure t
@@ -205,8 +204,7 @@
 
 
 ;;; Modes
-
-(add-hook 'prog-mode-hook #'prettify-symbols-mode)
+(global-prettify-symbols-mode +1)
 
 (use-package rainbow-delimiters
   :ensure t
@@ -223,7 +221,7 @@
 (use-package multiple-cursors
   :ensure t
   :bind
-  (("C-S-c C-S-c" . mc/edit-lines)
+  (("C-S-c C-i" . mc/edit-lines)
    ("C->" . mc/mark-next-like-this)
    ("C-<" . mc/mark-previous-like-this)
    ("C-S-c C-;" . mc/mark-all-like-this)
@@ -237,8 +235,19 @@
   :config
   (defun my/rsjx-mode-hook ()
     (setq indent-tabs-mode nil)
+    (setq js2-basic-offset 2)
     (setq js-indent-level 2))
   (add-hook 'rjsx-mode-hook #'my/rsjx-mode-hook))
+
+
+;; tide
+(use-package tide
+  :ensure t
+  :diminish tide-mode
+  :after (rjsx-mode company flycheck)
+  :hook ((rjsx-mode . tide-setup)
+         (rjsx-mode . tide-hl-identifier-mode)
+         (before-save . tide-format-before-save)))
 
 
 ;;; Clojure
