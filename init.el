@@ -33,10 +33,12 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(use-package material-theme
-  :ensure t
-  :config
-  (load-theme 'material t))
+(use-package spacemacs-common
+  :ensure spacemacs-theme
+  :init
+  (setq spacemacs-theme-comment-italic t)
+  (setq spacemacs-theme-keyword-italic t)
+  (load-theme 'spacemacs-dark t))
 
 (use-package all-the-icons)
 
@@ -44,7 +46,7 @@
   :ensure t
   :init (doom-modeline-mode 1))
 
-(setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 72)))
+(setq initial-frame-alist '((top . 0) (left . 1040) (width . 120) (height . 72)))
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
@@ -52,7 +54,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Fira Code 10" nil t)
+(set-frame-font "Consolas 10" nil t)
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
