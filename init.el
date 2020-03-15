@@ -38,12 +38,11 @@
   :config
   (load-theme 'material t))
 
-(use-package smart-mode-line
+(use-package all-the-icons)
+
+(use-package doom-modeline
   :ensure t
-  :config
-  (setq sml/no-confirm-load-theme t)
-  (setq sml/theme 'dark)
-  (add-hook 'after-init-hook #'sml/setup))
+  :init (doom-modeline-mode 1))
 
 (setq initial-frame-alist '((top . 0) (left . 1040) (width . 104) (height . 72)))
 (setq frame-title-format
