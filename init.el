@@ -119,6 +119,8 @@
   :bind-keymap
   ("s-p" . projectile-command-map)
   ("C-c p" . projectile-command-map)
+  :init
+  (setq projectile-globally-ignored-directories '(".git" "node_modules"))
   :config
   (projectile-mode +1))
 
@@ -126,8 +128,8 @@
   :ensure t
   :diminish company-mode
   :config
-  (add-hook 'after-init-hook #'global-company-mode)
-  (setq company-tooltip-align-annotations t))
+  (setq company-tooltip-align-annotations t)
+  (add-hook 'after-init-hook #'global-company-mode))
 
 (use-package flycheck
   :ensure t
@@ -172,6 +174,7 @@
   :ensure t
   :commands company-lsp
   :config (push 'company-lsp company-backends))
+(use-package helm-lsp :commands helm-lsp-workspace-symbol :ensure t)
 
 (use-package ccls
   :ensure t
@@ -228,6 +231,15 @@
    ("C-S-c C-;" . mc/mark-all-like-this)
    ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
 
+(use-package add-node-modules-path :ensure t)
+(use-package prettier-js
+  :ensure t
+  :config
+  (setq prettier-js-args '("--trailing-comma" "all"
+                           "--bracket-spacing" "false"
+                           "--single-quote" "true"
+                           "--jsx-single-quote" "true"
+                           "--print-width" "100")))
 
 ;;; rjsx
 (use-package rjsx-mode
@@ -238,6 +250,8 @@
     (setq indent-tabs-mode nil)
     (setq js2-basic-offset 2)
     (setq js-indent-level 2))
+  (add-hook 'rjsx-mode-hook #'add-node-modules-path)
+  (add-hook 'rjsx-mode-hook #'prettier-js-mode)
   (add-hook 'rjsx-mode-hook #'my/rsjx-mode-hook))
 
 
@@ -245,10 +259,17 @@
 (use-package tide
   :ensure t
   :diminish tide-mode
-  :after (rjsx-mode company flycheck)
+  :after (rjsx-mode company flycheck eldoc)
   :hook ((rjsx-mode . tide-setup)
          (rjsx-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
+
+(use-package emmet-mode
+  :ensure t
+  :hook rjsx-mode
+  :config
+  (add-hook 'emmet-mode-hook #'(lambda ()
+                                 (setq emmet-indent-after-insert t))))
 
 
 ;;; Clojure
