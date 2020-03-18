@@ -46,7 +46,7 @@
   :ensure t
   :init (doom-modeline-mode 1))
 
-(setq initial-frame-alist '((top . 0) (left . 1040) (width . 120) (height . 72)))
+(setq initial-frame-alist '((top . 0) (left . 1050) (width . 120) (height . 75)))
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
@@ -54,7 +54,7 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Consolas 10" nil t)
+(set-frame-font "Consolas")
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -111,7 +111,7 @@
 
 (use-package magit
   :ensure t
-  :bind (("C-M-g" . magit-status)))
+  :bind (("C-x-g" . magit-status)))
 
 (use-package projectile
   :ensure t
