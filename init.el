@@ -33,20 +33,15 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(use-package spacemacs-common
-  :ensure spacemacs-theme
-  :init
-  (setq spacemacs-theme-comment-italic t)
-  (setq spacemacs-theme-keyword-italic t)
-  (load-theme 'spacemacs-dark t))
+(set-frame-font "Consolas")
 
-(use-package all-the-icons)
+(setq initial-frame-alist '((top . 0)
+                            (left . 1050)
+                            (width . 120)
+                            (height . 75)))
+;; (setq initial-frame-alist '((fullscreen . maximized)))
 
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
 
-(setq initial-frame-alist '((top . 0) (left . 1050) (width . 120) (height . 75)))
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
@@ -54,7 +49,6 @@
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
-(set-frame-font "Consolas")
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -70,6 +64,19 @@
               indent-tabs-mode nil)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (add-hook 'before-save-hook 'whitespace-cleanup)
+
+(use-package spacemacs-common
+  :ensure spacemacs-theme
+  :init
+  (setq spacemacs-theme-comment-italic t)
+  (setq spacemacs-theme-keyword-italic t)
+  (load-theme 'spacemacs-dark t))
+
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
 (use-package diminish
   :ensure t)
@@ -168,7 +175,11 @@
   :ensure t)
 
 
-(use-package lsp-mode :commands lsp :ensure t)
+(use-package lsp-mode
+  :ensure t
+  :init (setq lsp-keymap-prefix "C-c l")
+  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :commands lsp)
 (use-package lsp-ui :commands lsp-ui-mode :ensure t)
 (use-package company-lsp
   :ensure t
@@ -228,7 +239,7 @@
   (("C-S-c C-i" . mc/edit-lines)
    ("C->" . mc/mark-next-like-this)
    ("C-<" . mc/mark-previous-like-this)
-   ("C-S-c C-;" . mc/mark-all-like-this)
+   ("C-S-c C-h" . mc/mark-all-like-this)
    ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package add-node-modules-path :ensure t)
@@ -326,24 +337,40 @@
   :ensure t)
 
 
+;; Rust
+(use-package rust-mode
+  :ensure t
+  :hook
+  (rust-mode . (lambda ()
+                 (setq indent-tabs-mode nil)
+                 (setq rust-indent-offset 2)
+                 (setq rust-format-on-save t)
+                 (lsp)
+                 (yas-minor-mode))))
+
+(use-package cargo
+  :ensure t
+  :hook (rust-mode . cargo-minor-mode)
+  :bind
+  (("C-c r" . cargo-process-run)
+   ("C-c t" . cargo-process-test)
+   ("C-c b" . cargo-process-build)))
+
 
 (require 'server)
 (if (not (server-running-p)) (server-start))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default)))
- '(package-selected-packages
-   (quote
-    (ccls company-lsp lsp-ui lsp-mode yasnippet helm-projectile helm flycheck company projectile magit crux avy which-key expand-region smartparens diminish smart-mode-line-powerline-theme material-theme use-package))))
+ )
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((min-colors 16777216)) (:background "#282a36" :foreground "#f8f8f2")) (t (:background "#000000" :foreground "#f8f8f2")))))
+ )
