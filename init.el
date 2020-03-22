@@ -63,6 +63,7 @@
 (setq-default tab-width 2
               indent-tabs-mode nil)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+(global-set-key [remap just-one-space] 'mark-word)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (use-package spacemacs-common
@@ -112,9 +113,9 @@
 (use-package crux
   :ensure t
   :bind
-  ("C-S-k" . crux-smart-kill-line)
-  ("C-c n" . crux-cleanup-buffer-or-region)
-  ("C-S-a" . crux-move-beginning-of-line))
+  ("C-a" . crux-move-beginning-of-line)
+  ("C-k" . crux-smart-kill-line)
+  ("C-c n" . crux-cleanup-buffer-or-region))
 
 (use-package magit
   :ensure t
@@ -236,11 +237,11 @@
 (use-package multiple-cursors
   :ensure t
   :bind
-  (("C-S-c C-i" . mc/edit-lines)
+  (("M-C i" . mc/edit-lines)
    ("C->" . mc/mark-next-like-this)
    ("C-<" . mc/mark-previous-like-this)
-   ("C-S-c C-h" . mc/mark-all-like-this)
-   ("C-S-<mouse-1>" . mc/add-cursor-on-click)))
+   ("M-C h" . mc/mark-all-like-this)
+   ("M-S-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package add-node-modules-path :ensure t)
 (use-package prettier-js
@@ -359,3 +360,7 @@
 
 (require 'server)
 (if (not (server-running-p)) (server-start))
+
+
+(provide 'init)
+;;; init.el ends here
