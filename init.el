@@ -238,8 +238,8 @@
   :ensure t
   :bind
   (("M-C i" . mc/edit-lines)
-   ("C->" . mc/mark-next-like-this)
-   ("C-<" . mc/mark-previous-like-this)
+   ("M-N" . mc/mark-next-like-this)
+   ("M-P" . mc/mark-previous-like-this)
    ("M-C h" . mc/mark-all-like-this)
    ("M-S-<mouse-1>" . mc/add-cursor-on-click)))
 
@@ -347,15 +347,18 @@
                  (setq rust-indent-offset 2)
                  (setq rust-format-on-save t)
                  (lsp)
-                 (yas-minor-mode))))
+                 (yas-minor-mode)))
+  :config
+  (sp-local-pair 'rust-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
 
 (use-package cargo
   :ensure t
   :hook (rust-mode . cargo-minor-mode)
   :bind
-  (("C-c r" . cargo-process-run)
-   ("C-c t" . cargo-process-test)
-   ("C-c b" . cargo-process-build)))
+  (:map rust-mode-map
+        ("C-c r" . cargo-process-run)
+        ("C-c b" . cargo-process-build)
+        ("C-c t" . cargo-process-test)))
 
 
 (require 'server)
