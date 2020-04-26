@@ -14,3 +14,4 @@ transient/
 /.lsp-session-v1
 /server
 /eshell
+nrepl-history
