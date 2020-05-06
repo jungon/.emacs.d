@@ -288,7 +288,9 @@
 
 (use-package clojure-mode
   :ensure t
-  :mode "\\.clj\\'"
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.cljs\\'" . clojurescript-mode)
+         ("\\.edn\\'" . clojurescript-mode))
   :config
   (progn
     (setq clojure-align-forms-automatically t)
@@ -321,6 +323,7 @@
     (setq cider-repl-pop-to-buffer-on-connect nil)
     (setq cider-repl-display-in-current-window nil)
     (setq cider-repl-display-help-banner nil)
+    (setq cider-repl-use-pretty-printing t)
     (setq cider-repl-require-ns-on-set t)))
 
 (use-package clj-refactor
