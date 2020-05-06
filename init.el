@@ -289,8 +289,8 @@
 (use-package clojure-mode
   :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.cljs\\'" . clojurescript-mode)
-         ("\\.edn\\'" . clojurescript-mode))
+         ("\\.edn\\'" . clojure-mode)
+         ("\\.cljs\\'" . clojurescript-mode))
   :config
   (progn
     (setq clojure-align-forms-automatically t)
