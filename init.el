@@ -220,6 +220,7 @@
 
 
 ;;; Modes
+
 (global-prettify-symbols-mode +1)
 
 (use-package rainbow-delimiters
@@ -234,6 +235,7 @@
 
 
 ;;; Multiple Cursors
+
 (use-package multiple-cursors
   :ensure t
   :bind
@@ -253,7 +255,9 @@
                            "--jsx-single-quote" "true"
                            "--print-width" "100")))
 
+
 ;;; rjsx
+
 (use-package rjsx-mode
   :ensure t
   :mode "\\.js\\'"
@@ -267,7 +271,8 @@
   (add-hook 'rjsx-mode-hook #'my/rsjx-mode-hook))
 
 
-;; tide
+;;; tide
+
 (use-package tide
   :ensure t
   :diminish tide-mode
@@ -275,13 +280,6 @@
   :hook ((rjsx-mode . tide-setup)
          (rjsx-mode . tide-hl-identifier-mode)
          (before-save . tide-format-before-save)))
-
-(use-package emmet-mode
-  :ensure t
-  :hook rjsx-mode
-  :config
-  (add-hook 'emmet-mode-hook #'(lambda ()
-                                 (setq emmet-indent-after-insert t))))
 
 
 ;;; Clojure
@@ -342,6 +340,7 @@
 
 
 ;; Rust
+
 (use-package rust-mode
   :ensure t
   :hook
