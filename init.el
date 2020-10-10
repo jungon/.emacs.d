@@ -62,6 +62,10 @@
 (set-keyboard-coding-system 'utf-8)
 (setq-default tab-width 2
               indent-tabs-mode nil)
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<up>") 'shrink-window)
+(global-set-key (kbd "S-C-<down>") 'enlarge-window)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key (kbd "M-/") 'comment-line)
 (global-set-key [remap just-one-space] 'mark-word)
@@ -72,8 +76,8 @@
 (use-package doom-themes
   :config
   ;; Global settings (defaults)
-  (setq doom-themes-enable-bold nil
-        doom-themes-enable-italic nil)
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
 
   (load-theme 'doom-one t)
 
