@@ -62,10 +62,6 @@
 (set-keyboard-coding-system 'utf-8)
 (setq-default tab-width 2
               indent-tabs-mode nil)
-(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-(global-set-key (kbd "S-C-<up>") 'shrink-window)
-(global-set-key (kbd "S-C-<down>") 'enlarge-window)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key (kbd "M-/") 'comment-line)
 (global-set-key [remap just-one-space] 'mark-word)
