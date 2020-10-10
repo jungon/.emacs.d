@@ -33,12 +33,12 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(set-frame-font "Consolas")
+(set-frame-font "Hack")
 
-(setq initial-frame-alist '((top . 0)
-                            (left . 1050)
-                            (width . 120)
-                            (height . 75)))
+(setq initial-frame-alist '((left . 956)
+                            (top . 10)
+                            (width . 116)
+                            (height . 73)))
 ;; (setq initial-frame-alist '((fullscreen . maximized)))
 
 
@@ -63,17 +63,30 @@
 (setq-default tab-width 2
               indent-tabs-mode nil)
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+(global-set-key (kbd "M-/") 'comment-line)
 (global-set-key [remap just-one-space] 'mark-word)
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
-(use-package spacemacs-common
-  :ensure spacemacs-theme
-  :init
-  (setq spacemacs-theme-comment-italic t)
-  (setq spacemacs-theme-keyword-italic t)
-  (load-theme 'spacemacs-dark t))
-
 (use-package all-the-icons)
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold nil
+        doom-themes-enable-italic nil)
+
+  (load-theme 'doom-one t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  ;;(doom-themes-neotree-config)
+  ;; or for treemacs users
+  ;;(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+
+  ;; Corrects (and improves) org-mode's native fontification
+  (doom-themes-org-config))
 
 (use-package doom-modeline
   :ensure t
@@ -369,3 +382,16 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(doom-themes which-key web-mode use-package tide spacemacs-theme smartparens smart-mode-line-powerline-theme rustic rjsx-mode rainbow-delimiters prettier-js magit lsp-ui helm-projectile helm-lsp expand-region exec-path-from-shell emmet-mode eglot edn doom-modeline diminish crux company-lsp clojure-mode-extra-font-locking clj-refactor cider-eval-sexp-fu ccls cargo avy aggressive-indent add-node-modules-path)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
