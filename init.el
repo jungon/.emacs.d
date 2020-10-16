@@ -5,7 +5,7 @@
 
 ;;; Code:
 
-(setq gc-cons-threshold 50000000)
+(setq gc-cons-threshold 1000000000)
 (setq large-file-warning-threshold 100000000)
 
 (require 'package)
@@ -33,19 +33,19 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
 
-(set-frame-font "Hack")
+(set-frame-font "Hack-13" nil t)
 
-(setq initial-frame-alist '((left . 956)
-                            (top . 10)
-                            (width . 116)
-                            (height . 73)))
+(setq initial-frame-alist '((left . 901)
+                            (top . 5)
+                            (width . 99)
+                            (height . 56)))
 ;; (setq initial-frame-alist '((fullscreen . maximized)))
-
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
+
 (setq scroll-margin 0
       scroll-conservatively 100000
       scroll-preserve-screen-position 1)
@@ -62,9 +62,10 @@
 (set-keyboard-coding-system 'utf-8)
 (setq-default tab-width 2
               indent-tabs-mode nil)
+
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
-(global-set-key (kbd "M-/") 'comment-line)
 (global-set-key [remap just-one-space] 'mark-word)
+
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 (use-package all-the-icons)
@@ -75,7 +76,7 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
 
-  (load-theme 'doom-one t)
+  (load-theme 'doom-one-light t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
