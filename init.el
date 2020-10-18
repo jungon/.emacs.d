@@ -32,13 +32,14 @@
 (size-indication-mode t)
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-screen t)
+(windmove-default-keybindings)
 
-(set-frame-font "Hack-13" nil t)
+(set-frame-font "Hack-12" nil t)
 
 (setq initial-frame-alist '((left . 901)
                             (top . 5)
                             (width . 99)
-                            (height . 56)))
+                            (height . 59)))
 ;; (setq initial-frame-alist '((fullscreen . maximized)))
 
 (setq frame-title-format
@@ -172,7 +173,7 @@
   (require 'helm-config)
   (helm-mode 1)
   (setq helm-split-window-inside-p t
-    helm-move-to-line-cycle-in-source t)
+        helm-move-to-line-cycle-in-source t)
   (setq helm-autoresize-max-height 0)
   (setq helm-autoresize-min-height 20)
   (helm-autoresize-mode 1)
@@ -188,7 +189,6 @@
 
 (use-package yasnippet
   :ensure t)
-
 
 (use-package lsp-mode
   :ensure t
@@ -217,7 +217,6 @@
   (use-package exec-path-from-shell
     :ensure t
     :config
-    (setq exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs '("PATH"))))
 
