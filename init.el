@@ -5,17 +5,14 @@
 
 ;;; Code:
 
-(setq gc-cons-threshold 1000000000)
-(setq large-file-warning-threshold 100000000)
-
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
+(package-refresh-contents)
 
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
   (package-install 'use-package))
 
 (eval-when-compile
@@ -67,7 +64,7 @@
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
 (global-set-key [remap just-one-space] 'mark-word)
 
-(add-hook 'before-save-hook 'whitespace-cleanup)
+(add-hook 'before-save-hook #'whitespace-cleanup)
 
 (use-package all-the-icons)
 
@@ -77,7 +74,7 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
 
-  (load-theme 'doom-one-light t)
+  (load-theme 'doom-one t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -164,6 +161,8 @@
   :ensure t
   :defer 2
   :diminish helm-mode
+  :commands
+  (helm-autoresize-mode)
   :bind
   ("M-x" . helm-M-x)
   ("C-x C-f" . helm-find-files)
@@ -181,6 +180,8 @@
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
   )
+
+(use-package helm-rg :ensure t)
 
 (use-package helm-projectile
   :ensure t
@@ -216,6 +217,8 @@
 (when (eq system-type 'darwin)
   (use-package exec-path-from-shell
     :ensure t
+    :commands
+    (exec-path-from-shell-initialize exec-path-from-shell-copy-envs)
     :config
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs '("PATH"))))
@@ -224,6 +227,8 @@
 ;;; Ediff
 
 (use-package ediff
+  :commands
+  (ediff-setup-windows-plain winner-undo)
   :init
   (setq ediff-window-setup-function #'ediff-setup-windows-plain)
   (setq ediff-split-window-function #'split-window-horizontally)
@@ -258,9 +263,15 @@
    ("M-C h" . mc/mark-all-like-this)
    ("M-S-<mouse-1>" . mc/add-cursor-on-click)))
 
-(use-package add-node-modules-path :ensure t)
+(use-package add-node-modules-path
+  :ensure t
+  :after (rjsx-mode)
+  :hook (rjsx-mode))
+
 (use-package prettier-js
   :ensure t
+  :after (rjsx-mode)
+  :hook (rjsx-mode . prettier-js-mode)
   :config
   (setq prettier-js-args '("--trailing-comma" "all"
                            "--bracket-spacing" "false"
@@ -273,25 +284,27 @@
 
 (use-package rjsx-mode
   :ensure t
-  :mode "\\.js\\'"
-  :config
-  (defun my/rsjx-mode-hook ()
-    (setq indent-tabs-mode nil)
-    (setq js2-basic-offset 2)
-    (setq js-indent-level 2))
-  (add-hook 'rjsx-mode-hook #'add-node-modules-path)
-  (add-hook 'rjsx-mode-hook #'prettier-js-mode)
-  (add-hook 'rjsx-mode-hook #'my/rsjx-mode-hook))
+  :mode "\\.js\\'")
 
 
 ;;; tide
+
+(defun my/tide-mode()
+  "Function for tide."
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enable))
+  (tide-hl-identifier-mode +1)
+  (company-mode +1)
+  (setq js2-basic-offset 2)
+  (setq js-indent-level 2))
 
 (use-package tide
   :ensure t
   :diminish tide-mode
   :after (rjsx-mode company flycheck eldoc)
-  :hook ((rjsx-mode . tide-setup)
-         (rjsx-mode . tide-hl-identifier-mode)
+  :hook ((rjsx-mode . my/tide-mode)
          (before-save . tide-format-before-save)))
 
 
@@ -300,7 +313,6 @@
 (use-package clojure-mode
   :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode)
          ("\\.cljs\\'" . clojurescript-mode))
   :config
   (progn
@@ -310,7 +322,6 @@
 
 (use-package cider
   :ensure t
-  :defer t
   :init
   (add-hook 'cider-mode-hook #'yas-minor-mode)
   (add-hook 'cider-mode-hook #'subword-mode)
@@ -337,16 +348,19 @@
     (setq cider-repl-use-pretty-printing t)
     (setq cider-repl-require-ns-on-set t)))
 
+(defun my/clojure-mode()
+  "Function for clojure."
+  (clj-refactor-mode +1)
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  (yas-minor-mode +1))
+
 (use-package clj-refactor
   :ensure t
-  :defer t
   :diminish clj-refactor-mode
-  :init
-  (defun my/clojure-mode-hook ()
-    (clj-refactor-mode 1)
-    (yas-minor-mode 1)
-    (cljr-add-keybindings-with-prefix "C-c C-m"))
-  (add-hook 'clojure-mode-hook #'my/clojure-mode-hook))
+  :after
+  (clojure-mode)
+  :hook
+  (clojure-mode . my/clojure-mode))
 
 (use-package cider-eval-sexp-fu
   :ensure t)
@@ -356,6 +370,8 @@
 
 (use-package rust-mode
   :ensure t
+  :commands
+  (sp-local-pair)
   :hook
   (rust-mode . (lambda ()
                  (setq indent-tabs-mode nil)
@@ -388,7 +404,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(doom-themes which-key web-mode use-package tide spacemacs-theme smartparens smart-mode-line-powerline-theme rustic rjsx-mode rainbow-delimiters prettier-js magit lsp-ui helm-projectile helm-lsp expand-region exec-path-from-shell emmet-mode eglot edn doom-modeline diminish crux company-lsp clojure-mode-extra-font-locking clj-refactor cider-eval-sexp-fu ccls cargo avy aggressive-indent add-node-modules-path)))
+   '(helm-ag helm-rg doom-themes which-key web-mode use-package tide spacemacs-theme smartparens smart-mode-line-powerline-theme rustic rjsx-mode rainbow-delimiters prettier-js magit lsp-ui helm-projectile helm-lsp expand-region exec-path-from-shell emmet-mode eglot edn doom-modeline diminish crux company-lsp clojure-mode-extra-font-locking clj-refactor cider-eval-sexp-fu ccls cargo avy aggressive-indent add-node-modules-path)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
