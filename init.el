@@ -16,7 +16,9 @@
   (package-install 'use-package))
 
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package)
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t))
 
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
@@ -71,7 +73,6 @@
 (use-package all-the-icons)
 
 (use-package doom-themes
-  :ensure t
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t
@@ -91,14 +92,11 @@
   (doom-themes-org-config))
 
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1))
 
-(use-package diminish
-  :ensure t)
+(use-package diminish)
 
 (use-package smartparens
-  :ensure t
   :diminish smartparens-mode
   :init
   (add-hook 'prog-mode-hook #'smartparens-mode)
@@ -109,35 +107,29 @@
     (show-paren-mode t)))
 
 (use-package expand-region
-  :ensure t
   :bind ("M-m" . er/expand-region))
 
 (use-package which-key
-  :ensure t
   :diminish which-key-mode
   :config
   (which-key-mode +1))
 
 (use-package avy
-  :ensure t
   :bind
   ("C-=" . avy-goto-char)
   :config
   (setq avy-background t))
 
 (use-package crux
-  :ensure t
   :bind
   ("C-a" . crux-move-beginning-of-line)
   ("C-k" . crux-smart-kill-line)
   ("C-c n" . crux-cleanup-buffer-or-region))
 
 (use-package magit
-  :ensure t
   :bind (("C-x g" . magit-status)))
 
 (use-package projectile
-  :ensure t
   :diminish projectile-mode
   :bind-keymap
   ("C-c p" . projectile-command-map)
@@ -147,20 +139,17 @@
   (projectile-mode +1))
 
 (use-package company
-  :ensure t
   :diminish company-mode
   :config
   (setq company-tooltip-align-annotations t)
   (add-hook 'after-init-hook #'global-company-mode))
 
 (use-package flycheck
-  :ensure t
   :diminish flycheck-mode
   :config
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
 (use-package helm
-  :ensure t
   :defer 2
   :diminish helm-mode
   :commands
@@ -185,27 +174,22 @@
   )
 
 (use-package helm-projectile
-  :ensure t
   :config
   (helm-projectile-on))
 
-(use-package yasnippet
-  :ensure t)
+(use-package yasnippet)
 
 (use-package lsp-mode
-  :ensure t
   :init (setq lsp-keymap-prefix "C-c l")
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :commands lsp)
-(use-package lsp-ui :commands lsp-ui-mode :ensure t)
+(use-package lsp-ui :commands lsp-ui-mode)
 (use-package company-lsp
-  :ensure t
   :commands company-lsp
   :config (push 'company-lsp company-backends))
-(use-package helm-lsp :commands helm-lsp-workspace-symbol :ensure t)
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
 
 (use-package ccls
-  :ensure t
   :config
   (setq ccls-executable "ccls")
   (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
@@ -217,7 +201,6 @@
 
 (when (eq system-type 'darwin)
   (use-package exec-path-from-shell
-    :ensure t
     :commands
     (exec-path-from-shell-initialize exec-path-from-shell-copy-envs)
     :config
@@ -243,12 +226,10 @@
 (global-prettify-symbols-mode +1)
 
 (use-package rainbow-delimiters
-  :ensure t
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package aggressive-indent
-  :ensure t
   :init
   (add-hook 'prog-mode-hook #'aggressive-indent-mode))
 
@@ -256,7 +237,6 @@
 ;;; Multiple Cursors
 
 (use-package multiple-cursors
-  :ensure t
   :bind
   (("M-C i" . mc/edit-lines)
    ("M-N" . mc/mark-next-like-this)
@@ -265,12 +245,10 @@
    ("M-S-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package add-node-modules-path
-  :ensure t
   :after (rjsx-mode)
   :hook (rjsx-mode))
 
 (use-package prettier-js
-  :ensure t
   :after (rjsx-mode)
   :hook (rjsx-mode . prettier-js-mode)
   :config
@@ -284,7 +262,6 @@
 ;;; rjsx
 
 (use-package rjsx-mode
-  :ensure t
   :mode "\\.js\\'")
 
 
@@ -302,7 +279,6 @@
   (setq js-indent-level 2))
 
 (use-package tide
-  :ensure t
   :diminish tide-mode
   :after (rjsx-mode company flycheck eldoc)
   :hook ((rjsx-mode . my/tide-mode)
@@ -312,7 +288,6 @@
 ;;; Clojure
 
 (use-package clojure-mode
-  :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.cljs\\'" . clojurescript-mode))
   :config
@@ -322,7 +297,6 @@
           '(("fn" . ?λ)))))
 
 (use-package cider
-  :ensure t
   :init
   (add-hook 'cider-mode-hook #'yas-minor-mode)
   (add-hook 'cider-mode-hook #'subword-mode)
@@ -356,21 +330,18 @@
   (yas-minor-mode +1))
 
 (use-package clj-refactor
-  :ensure t
   :diminish clj-refactor-mode
   :after
   (clojure-mode)
   :hook
   (clojure-mode . my/clojure-mode))
 
-(use-package cider-eval-sexp-fu
-  :ensure t)
+(use-package cider-eval-sexp-fu)
 
 
 ;; Rust
 
 (use-package rust-mode
-  :ensure t
   :commands
   (sp-local-pair)
   :hook
@@ -384,7 +355,6 @@
   (sp-local-pair 'rust-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
 
 (use-package cargo
-  :ensure t
   :hook (rust-mode . cargo-minor-mode)
   :bind
   (:map rust-mode-map
