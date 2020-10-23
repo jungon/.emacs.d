@@ -62,6 +62,8 @@
               indent-tabs-mode nil)
 
 (global-set-key (kbd "C-x C-k") 'kill-this-buffer)
+(global-set-key (kbd "C-;") 'comment-line)
+(global-set-key [remap suspend-frame] 'undo)
 (global-set-key [remap just-one-space] 'mark-word)
 
 (add-hook 'before-save-hook #'whitespace-cleanup)
@@ -69,6 +71,7 @@
 (use-package all-the-icons)
 
 (use-package doom-themes
+  :ensure t
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t
@@ -137,7 +140,6 @@
   :ensure t
   :diminish projectile-mode
   :bind-keymap
-  ("s-p" . projectile-command-map)
   ("C-c p" . projectile-command-map)
   :init
   (setq projectile-globally-ignored-directories '(".git" "node_modules"))
@@ -167,7 +169,8 @@
   ("M-x" . helm-M-x)
   ("C-x C-f" . helm-find-files)
   ("M-y" . helm-show-kill-ring)
-  ("C-x C-b" . helm-mini)
+  ("C-x C-b" . helm-buffers-list)
+  ("C-x b" . helm-mini)
   :config
   (require 'helm-config)
   (helm-mode 1)
@@ -180,8 +183,6 @@
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
   (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
   )
-
-(use-package helm-rg :ensure t)
 
 (use-package helm-projectile
   :ensure t
