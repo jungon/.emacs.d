@@ -33,12 +33,12 @@
 (setq inhibit-startup-screen t)
 (windmove-default-keybindings)
 
-(set-frame-font "Hack-12" nil t)
+(set-frame-font "Hack-10" nil t)
 
 (setq initial-frame-alist '((left . 901)
                             (top . 5)
-                            (width . 99)
-                            (height . 59)))
+                            (width . 123)
+                            (height . 74)))
 ;; (setq initial-frame-alist '((fullscreen . maximized)))
 
 (setq frame-title-format
@@ -297,14 +297,16 @@
           '(("fn" . ?λ)))))
 
 (use-package cider
-  :init
-  (add-hook 'cider-mode-hook #'yas-minor-mode)
-  (add-hook 'cider-mode-hook #'subword-mode)
-  (add-hook 'cider-mode-hook #'clj-refactor-mode)
-  (add-hook 'cider-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'subword-mode)
-  (add-hook 'cider-repl-mode-hook #'smartparens-mode)
-  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+  :hook
+  (cider-mode . (lambda ()
+                  (yas-minor-mode)
+                  (subword-mode)
+                  (clj-refactor-mode)
+                  (eldoc-mode)))
+  (cider-repl-mode . (lambda ()
+                       (subword-mode)
+                       (smartparens-mode)
+                       (rainbow-delimiters-mode)))
   :config
   (progn
     (setq nrepl-hide-special-buffers t)
@@ -317,8 +319,7 @@
     (setq cider-show-error-buffer t)
     (setq cider-auto-select-error-buffer t)
     (setq cider-repl-history-file "~/.emacs.d/nrepl-history")
-    (setq cider-repl-pop-to-buffer-on-connect nil)
-    (setq cider-repl-display-in-current-window nil)
+    (setq cider-repl-pop-to-buffer-on-connect 'display-only)
     (setq cider-repl-display-help-banner nil)
     (setq cider-repl-use-pretty-printing t)
     (setq cider-repl-require-ns-on-set t)))
