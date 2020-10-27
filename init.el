@@ -5,8 +5,13 @@
 
 ;;; Code:
 
+(setq gc-cons-threshold 100000000)
+
 (require 'package)
+
 (setq package-enable-at-startup nil)
+
+;;; Define package repositories
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
@@ -340,28 +345,6 @@
 (use-package cider-eval-sexp-fu)
 
 
-;; Rust
-
-(use-package rust-mode
-  :commands
-  (sp-local-pair)
-  :hook
-  (rust-mode . (lambda ()
-                 (setq indent-tabs-mode nil)
-                 (setq rust-indent-offset 2)
-                 (setq rust-format-on-save t)
-                 (lsp)
-                 (yas-minor-mode)))
-  :config
-  (sp-local-pair 'rust-mode "{" nil :post-handlers '(("||\n[i]" "RET"))))
-
-(use-package cargo
-  :hook (rust-mode . cargo-minor-mode)
-  :bind
-  (:map rust-mode-map
-        ("C-c r" . cargo-process-run)
-        ("C-c b" . cargo-process-build)
-        ("C-c t" . cargo-process-test)))
 
 
 (require 'server)
