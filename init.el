@@ -14,8 +14,13 @@
 ;;; Define package repositories
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+
+;;; Initializes the package infrastructure
 (package-initialize)
-(package-refresh-contents)
+
+;;; If there are no archived package contents, refresh theme
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -244,10 +249,13 @@
 (use-package multiple-cursors
   :bind
   (("M-C i" . mc/edit-lines)
+   ("M-C h" . mc/mark-all-like-this)
    ("M-N" . mc/mark-next-like-this)
    ("M-P" . mc/mark-previous-like-this)
-   ("M-C h" . mc/mark-all-like-this)
    ("M-S-<mouse-1>" . mc/add-cursor-on-click)))
+
+
+;;; rjsx
 
 (use-package add-node-modules-path
   :after (rjsx-mode)
@@ -262,9 +270,6 @@
                            "--single-quote" "true"
                            "--jsx-single-quote" "true"
                            "--print-width" "100")))
-
-
-;;; rjsx
 
 (use-package rjsx-mode
   :mode "\\.js\\'")
@@ -304,9 +309,8 @@
 (use-package cider
   :hook
   (cider-mode . (lambda ()
-                  (yas-minor-mode)
                   (subword-mode)
-                  (clj-refactor-mode)
+                  (yas-minor-mode)
                   (eldoc-mode)))
   (cider-repl-mode . (lambda ()
                        (subword-mode)
@@ -332,8 +336,8 @@
 (defun my/clojure-mode()
   "Function for clojure."
   (clj-refactor-mode +1)
-  (cljr-add-keybindings-with-prefix "C-c C-m")
-  (yas-minor-mode +1))
+  (yas-minor-mode +1)
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package clj-refactor
   :diminish clj-refactor-mode
