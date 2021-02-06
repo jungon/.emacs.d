@@ -4,16 +4,16 @@
 ;;; Simple Emacs setup I carry everywhere
 
 ;;; Code:
-
-(setq gc-cons-threshold 100000000)
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024))
 
 (require 'package)
 
 (setq package-enable-at-startup nil)
 
 ;;; Define package repositories
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
 
 ;;; Initializes the package infrastructure
 (package-initialize)
@@ -77,6 +77,7 @@
 (global-set-key (kbd "C-;") 'comment-line)
 (global-set-key [remap suspend-frame] 'undo)
 (global-set-key [remap just-one-space] 'mark-word)
+(global-set-key (kbd "C-c s") 'eshell)
 
 (add-hook 'before-save-hook #'whitespace-cleanup)
 
@@ -151,7 +152,9 @@
 (use-package company
   :diminish company-mode
   :config
-  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-align-annotations t
+        company-idle-delay 0.0
+        company-minimum-prefix-length 1)
   (add-hook 'after-init-hook #'global-company-mode))
 
 (use-package flycheck
@@ -190,13 +193,25 @@
 (use-package yasnippet)
 
 (use-package lsp-mode
-  :init (setq lsp-keymap-prefix "C-c l")
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+        lsp-lens-enable t
+        lsp-signature-auto-activate nil
+        ;;lsp-enable-indentation nil ; uncomment to use cider indentation instead of lsp
+        ;;lsp-enable-completion-at-point nil ; uncomment to use cider completion instead of lsp
+        )
   :hook (lsp-mode . lsp-enable-which-key-integration)
   :commands lsp)
+
 (use-package lsp-ui :commands lsp-ui-mode)
+
 (use-package company-lsp
   :commands company-lsp
   :config (push 'company-lsp company-backends))
+
+(use-package lsp-treemacs
+  :init (setq treemacs-space-between-root-nodes nil))
+
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 
 (use-package ccls
@@ -238,10 +253,6 @@
 (use-package rainbow-delimiters
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-
-(use-package aggressive-indent
-  :init
-  (add-hook 'prog-mode-hook #'aggressive-indent-mode))
 
 
 ;;; Multiple Cursors
@@ -299,6 +310,7 @@
 
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode)
          ("\\.cljs\\'" . clojurescript-mode))
   :config
   (progn
@@ -309,6 +321,7 @@
 (use-package cider
   :hook
   (cider-mode . (lambda ()
+                  (lsp)
                   (subword-mode)
                   (yas-minor-mode)
                   (eldoc-mode)))
@@ -335,8 +348,8 @@
 
 (defun my/clojure-mode()
   "Function for clojure."
-  (clj-refactor-mode +1)
-  (yas-minor-mode +1)
+  (clj-refactor-mode 1)
+  (yas-minor-mode 1)
   (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package clj-refactor
@@ -345,9 +358,6 @@
   (clojure-mode)
   :hook
   (clojure-mode . my/clojure-mode))
-
-(use-package cider-eval-sexp-fu)
-
 
 
 
@@ -363,7 +373,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(helm-ag helm-rg doom-themes which-key web-mode use-package tide spacemacs-theme smartparens smart-mode-line-powerline-theme rustic rjsx-mode rainbow-delimiters prettier-js magit lsp-ui helm-projectile helm-lsp expand-region exec-path-from-shell emmet-mode eglot edn doom-modeline diminish crux company-lsp clojure-mode-extra-font-locking clj-refactor cider-eval-sexp-fu ccls cargo avy aggressive-indent add-node-modules-path)))
+   '(rg lsp-treemacs helm-ag doom-themes which-key web-mode use-package tide spacemacs-theme smartparens smart-mode-line-powerline-theme rustic rjsx-mode rainbow-delimiters prettier-js magit lsp-ui helm-projectile helm-lsp expand-region exec-path-from-shell emmet-mode eglot edn doom-modeline diminish crux company-lsp clojure-mode-extra-font-locking clj-refactor cider-eval-sexp-fu ccls cargo avy aggressive-indent add-node-modules-path)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
